@@ -115,45 +115,4 @@ public class UserServiceImpl implements UserService<UserDto,User> {
         }
         return userDto;
     }
-
-
-//    @Override
-//    public List<User> getAll() {
-//        return this.userRepository.findAll();
-//    }
-//
-//    @Override
-//    public List<User> getAllByStatus(boolean status) {
-//        return this.userRepository.getUsersByStatus(status);
-//    }
-//
-//    @Override
-//    public User getById(Long id) {
-//        // TODO: böyle bir id olup olmadığı kontrol edilecek
-//        return this.userRepository.findById(id).get();
-//    }
-//
-//    @Override
-//    public void add(User user) {
-//        this.userRepository.save(user);
-//    }
-//
-//    @Override
-//    public void delete(User user) {
-//        this.userRepository.delete(user);
-//    }
-//
-//    @Override
-//    public void update(Long id,User user) {
-//        var userToUpdate = getById(id);
-//        userToUpdate.setFirstName(user.getFirstName());
-//        userToUpdate.setLastName(user.getLastName());
-//        userToUpdate.setEmail(user.getEmail());
-//        userToUpdate.setPassword(user.getPassword());
-//        userToUpdate.setStatus(user.isStatus());
-//        this.userRepository.save(userToUpdate);
-//    }
-
-
-
 }
