@@ -8,6 +8,10 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    boolean existsUserByEmail(String email);
+    User getUserByEmail(String email);
+
     //Delivered Query
     List<User> getUsersByStatus(boolean status);
 }

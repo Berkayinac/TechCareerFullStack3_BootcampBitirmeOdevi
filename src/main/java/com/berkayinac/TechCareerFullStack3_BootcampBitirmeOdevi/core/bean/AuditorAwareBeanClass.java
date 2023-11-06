@@ -1,6 +1,6 @@
 package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.bean;
 
-import com.hamitmizrak.tech_3_springreact.audit.AuditorAwareImpl;
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.audit.AuditorAwareImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

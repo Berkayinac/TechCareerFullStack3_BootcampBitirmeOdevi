@@ -1,6 +1,7 @@
 package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.annotation;
 
-import com.hamitmizrak.tech_3_springreact.data.repository.IRegisterRepository;
+
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.dataAccess.repositories.UserRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class UniqueEmailAddressValidation implements ConstraintValidator<AnnotationUniqueEmailAddress,String> {
 
     // INJECTION
-    private final IRegisterRepository iRegisterRepository;
+    private final UserRepository userRepository;
 
     @Override
     public void initialize(AnnotationUniqueEmailAddress constraintAnnotation) {
@@ -22,7 +23,7 @@ public class UniqueEmailAddressValidation implements ConstraintValidator<Annotat
     // DATABASE SORGUSU
     @Override
     public boolean isValid(String emailAddress, ConstraintValidatorContext constraintValidatorContext) {
-        Boolean isEmailAddress=iRegisterRepository.findByRegisterEmail(emailAddress).isPresent();
+        Boolean isEmailAddress= userRepository.existsUserByEmail(emailAddress);
         //Eğer email address sistemde varsa
         if(isEmailAddress){
             return false;

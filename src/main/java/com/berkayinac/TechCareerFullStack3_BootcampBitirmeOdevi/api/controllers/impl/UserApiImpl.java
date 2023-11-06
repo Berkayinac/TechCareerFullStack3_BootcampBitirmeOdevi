@@ -2,7 +2,7 @@ package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.api.controllers
 
 
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.api.controllers.IUserApi;
-import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.UserService;
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.services.UserService;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.UserDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,8 +26,8 @@ public class UserApiImpl implements IUserApi<UserDto> {
     }
 
     @Override
-    @GetMapping("/getAllByStatus/")
-    public ResponseEntity<List<UserDto>> userApiGetAllByStatus(@RequestParam(name = "Status") boolean status) {
+    @GetMapping("/getAllByStatus")
+    public ResponseEntity<List<UserDto>> userApiGetAllByStatus(@RequestParam(name = "status") boolean status) {
         return ResponseEntity.ok().body(this.userService.getAllByStatus(status));
     }
 
@@ -44,11 +44,13 @@ public class UserApiImpl implements IUserApi<UserDto> {
     }
 
     @Override
+    @DeleteMapping("/delete")
     public ResponseEntity<?> userApiDelete(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(this.userService.delete(userDto));
     }
 
     @Override
+    @PutMapping("/update")
     public ResponseEntity<?> userApiUpdate(@RequestParam(name = "Id") Long id, @Valid @RequestBody UserDto userDto) {
         return ResponseEntity.ok(this.userService.update(id,userDto));
     }

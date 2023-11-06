@@ -1,6 +1,4 @@
-package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business;
-
-import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.User;
+package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.services;
 
 import java.util.List;
 
@@ -17,4 +15,5 @@ public interface UserService<D,E> {
     D delete(D d);
     D update(Long id,D d);
 
+    void userServiceSpeedData(Long speedDataCount);
 }
