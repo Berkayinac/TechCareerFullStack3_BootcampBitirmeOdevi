@@ -2,6 +2,7 @@ package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.api.controllers
 
 
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.api.controllers.IUserApi;
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.UserLoginDto;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.services.UserService;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.UserDto;
 import jakarta.validation.Valid;
@@ -53,5 +54,17 @@ public class UserApiImpl implements IUserApi<UserDto> {
     @PutMapping("/update")
     public ResponseEntity<?> userApiUpdate(@RequestParam(name = "Id") Long id, @Valid @RequestBody UserDto userDto) {
         return ResponseEntity.ok(this.userService.update(id,userDto));
+    }
+
+    @Override
+    @PostMapping("/register")
+    public ResponseEntity<?> userApiRegister(@Valid @RequestBody UserDto userDto) {
+        return ResponseEntity.ok(this.userService.register(userDto));
+    }
+
+    @Override
+    @PostMapping("/login")
+    public ResponseEntity<?> userApiLogin(@Valid @RequestBody UserLoginDto userLoginDto) {
+        return ResponseEntity.ok(this.userService.login(userLoginDto));
     }
 }

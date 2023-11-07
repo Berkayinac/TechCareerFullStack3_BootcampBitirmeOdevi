@@ -1,5 +1,6 @@
 package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.api.controllers;
 
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.UserLoginDto;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.User;
 import org.springframework.http.ResponseEntity;
 
@@ -13,4 +14,6 @@ public interface IUserApi<D> {
     ResponseEntity<?> userApiCreate(D d);
     ResponseEntity<?> userApiDelete(D d);
     ResponseEntity<?> userApiUpdate(Long id,D d);
+    ResponseEntity<?> userApiRegister(D d);
+    ResponseEntity<?> userApiLogin(UserLoginDto userLoginDto);
 }

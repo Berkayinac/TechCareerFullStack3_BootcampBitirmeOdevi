@@ -1,9 +1,11 @@
 package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.rules;
 
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.bean.PasswordEncoderBeanClass;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.exception.BusinessRulesException;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.dataAccess.repositories.UserRepository;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.User;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 public class UserBusinessRules {
 
     private UserRepository userRepository;
+    private final PasswordEncoderBeanClass passwordEncoderBeanClass;
 
 // Sistemde kayıtlı kullanıcılar bulunamadıysa mesaj göndersin.
     public void checkUsersNotExists(List<User> userList){
@@ -38,6 +41,22 @@ public class UserBusinessRules {
         var userV1 = this.userRepository.existsUserByEmail(email);
         if(userV1){
             throw new BusinessRulesException(userExistsMessage);
+        }
+    }
+
+    public void checkIfUserNotExists(String email){
+        String userExistsMessage = "Email veya şifre yanlış";
+        var userV1 = this.userRepository.existsUserByEmail(email);
+        if(!userV1){
+            throw new BusinessRulesException(userExistsMessage);
+        }
+    }
+
+    public void passwordMatch(String password, String encodedPassword){
+        String passwordMatchMessage = "Email veya şifre yanlış.";
+        var result = this.passwordEncoderBeanClass.passwordEncoderMethod().matches(password,encodedPassword);
+        if(!result){
+            throw new BusinessRulesException(passwordMatchMessage);
         }
     }
 
