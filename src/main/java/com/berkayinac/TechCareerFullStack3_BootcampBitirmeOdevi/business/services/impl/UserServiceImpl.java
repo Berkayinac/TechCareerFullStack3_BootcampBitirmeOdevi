@@ -121,6 +121,7 @@ public class UserServiceImpl implements UserService<UserDto,User> {
     }
 
     @Override
+    @Transactional
     public void userServiceSpeedData(Long speedDataCount) {
         if(speedDataCount == null){
             return;
@@ -138,6 +139,7 @@ public class UserServiceImpl implements UserService<UserDto,User> {
     }
 
     @Override
+    @Transactional
     public UserDto register(UserDto userDto) {
         //Business Rule
         this.userBusinessRules.checkIfUserExists(userDto.getEmail());
@@ -151,6 +153,7 @@ public class UserServiceImpl implements UserService<UserDto,User> {
     }
 
     @Override
+    @Transactional
     public UserDto login(UserLoginDto userLoginDto) {
         this.userBusinessRules.checkIfUserNotExists(userLoginDto.getEmail());
 
