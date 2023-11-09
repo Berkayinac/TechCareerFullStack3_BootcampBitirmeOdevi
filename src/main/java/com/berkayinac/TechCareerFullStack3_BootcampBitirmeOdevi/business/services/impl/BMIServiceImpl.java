@@ -84,34 +84,62 @@ public class BMIServiceImpl implements BMIService<BMIDto, BMIEntity> {
     public BMIDto calculate(BMIDto bmiDto) {
         var calculateBMI = bmiDto.getWeight() / Math.pow(bmiDto.getHeight(), 2);
         bmiDto.setBodyMassIndex(calculateBMI);
-        if(bmiDto.getBodyMassIndex() < 18.5){
-            bmiDto.setResult(BMIResults.ZAYIF.toString());
-        }
 
-        else if(bmiDto.getBodyMassIndex() >= 18.5 && bmiDto.getBodyMassIndex() < 24.9){
-            bmiDto.setResult(BMIResults.NORMAL.toString());
-        }
+        var result = bmiDto.getResult();
 
-        else if(bmiDto.getBodyMassIndex() >= 25 && bmiDto.getBodyMassIndex() < 29.9){
-            bmiDto.setResult(BMIResults.FAZLAKILOLU.toString());
+        while (result == null){
+            result = calculateBmiZayif(bmiDto.getBodyMassIndex(),result);
+            result = calculateBmiNormal(bmiDto.getBodyMassIndex(),result);
+            result = calculateBmiFazlakilolu(bmiDto.getBodyMassIndex(),result);
+            result = calculateBmiBirinciDereceObezite(bmiDto.getBodyMassIndex(),result);
+            result = calculateBmiIkinciDereceObezite(bmiDto.getBodyMassIndex(),result);
+            result = calculateBmiUcuncuDereceObezite(bmiDto.getBodyMassIndex(),result);
         }
-
-        else if(bmiDto.getBodyMassIndex() >= 30 && bmiDto.getBodyMassIndex() < 34.9){
-            bmiDto.setResult(BMIResults.BIRINCIDERECEOBEZITE.toString());
-        }
-
-        else if(bmiDto.getBodyMassIndex() >= 35 && bmiDto.getBodyMassIndex() < 39.9){
-            bmiDto.setResult(BMIResults.IKINCIDERECEOBEZITE.toString());
-        }
-
-        else if(bmiDto.getBodyMassIndex() >= 40){
-            bmiDto.setResult(BMIResults.UCUNCUDERECEOBEZITE.toString());
-        }
-        else{
-            bmiDto.setResult(BMIResults.HATALIISLEM.toString());
-        }
+        bmiDto.setResult(result);
 
         this.add(bmiDto);
         return bmiDto;
+    }
+
+    private String calculateBmiZayif(double bodyMassIndex, String result){
+        if(bodyMassIndex < 18.5){
+            result = BMIResults.ZAYIF.toString();
+        }
+        return result;
+    }
+
+    private String calculateBmiNormal(double bodyMassIndex, String result){
+        if(bodyMassIndex >= 18.5 && bodyMassIndex < 24.9){
+            result = BMIResults.NORMAL.toString();
+        }
+        return result;
+    }
+
+    private String calculateBmiFazlakilolu(double bodyMassIndex, String result){
+        if(bodyMassIndex >= 25 && bodyMassIndex <  29.9){
+            result = BMIResults.NORMAL.toString();
+        }
+        return result;
+    }
+
+    private String calculateBmiBirinciDereceObezite(double bodyMassIndex, String result){
+        if(bodyMassIndex >= 30 && bodyMassIndex < 34.9){
+            result = BMIResults.BIRINCIDERECEOBEZITE.toString();
+        }
+        return result;
+    }
+
+    private String calculateBmiIkinciDereceObezite(double bodyMassIndex, String result){
+        if(bodyMassIndex >= 35 && bodyMassIndex < 39.9){
+            result = BMIResults.IKINCIDERECEOBEZITE.toString();
+        }
+        return result;
+    }
+
+    private String calculateBmiUcuncuDereceObezite(double bodyMassIndex, String result){
+        if(bodyMassIndex >= 40){
+            result = BMIResults.UCUNCUDERECEOBEZITE.toString();
+        }
+        return result;
     }
 }
