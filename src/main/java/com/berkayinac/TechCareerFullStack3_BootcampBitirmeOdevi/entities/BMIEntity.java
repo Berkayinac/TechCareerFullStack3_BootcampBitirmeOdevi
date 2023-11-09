@@ -1,8 +1,6 @@
 package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
@@ -13,23 +11,25 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "BodyMassIndexes")
+@Table(name = "body_mass_indexes")
 public class BMIEntity extends BaseEntity implements Serializable {
     // Serileştirme
     public static final Long serialVersionUID=1L;
 
-    @Column(name = "UserId")
-    private Long userId;
-
-    @Column(name = "Weight")
+    @Column(name = "weight")
     private double weight;
 
-    @Column(name = "Height")
+    @Column(name = "height")
     private double height;
 
-    @Column(name = "BodyMassIndex")
+    @Column(name = "bodyMassIndex")
     private double bodyMassIndex;
 
-    @Column(name = "Result")
+    @Column(name = "result")
     private String result;
+
+    @ManyToOne()
+    @JoinColumn(name="user_id")
+    private User user;
+
 }

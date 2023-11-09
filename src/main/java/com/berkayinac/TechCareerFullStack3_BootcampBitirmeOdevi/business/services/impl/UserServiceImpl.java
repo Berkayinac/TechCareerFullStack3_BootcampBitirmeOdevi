@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService<UserDto,User> {
         user.setEmail(userToUpdate.getEmail());
         user.setPassword(userToUpdate.getPassword());
         user.setStatus(userToUpdate.isStatus());
+        user.setRole(userToUpdate.getRole());
 
         this.userRepository.save(dtoToEntity(user));
         userDto.setId(userToUpdate.getId());
@@ -135,7 +136,6 @@ public class UserServiceImpl implements UserService<UserDto,User> {
             userDto.setPassword("password" + UUID.randomUUID());
             this.add(userDto);
         }
-
     }
 
     @Override

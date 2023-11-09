@@ -3,6 +3,7 @@ package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos;
 
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.annotation.AnnotationUniqueEmailAddress;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.audit.AuditingAwareBaseDto;
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.enums.UserRoles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -34,12 +35,13 @@ public class UserDto extends AuditingAwareBaseDto implements Serializable {
     @NotEmpty(message = "{user.password.validation.constraints.NotNull.message}")
     private String password;
 
-
     @Builder.Default
     private Date registrationDay = new Date(System.currentTimeMillis());
 
     @Builder.Default
     private boolean status = false;
 
+    @Builder.Default
+    private String role = UserRoles.USER.toString();
 
 }
