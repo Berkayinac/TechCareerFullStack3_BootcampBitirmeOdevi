@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/bmi/api/v1.0.0")
-public class IBMIApiImpl implements IBMIApi<BMIDto> {
+public class BMIApiImpl implements IBMIApi<BMIDto> {
 
     private BMIService bmiService;
 

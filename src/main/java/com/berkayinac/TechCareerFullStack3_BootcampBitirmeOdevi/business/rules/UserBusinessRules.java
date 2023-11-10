@@ -60,4 +60,10 @@ public class UserBusinessRules {
         }
     }
 
+    public void checkIfUserEmailUpdate(String currentEmail, String newEmail){
+        if(!currentEmail.equals(newEmail)){
+            checkIfUserExists(newEmail);
+        }
+    }
+
 }

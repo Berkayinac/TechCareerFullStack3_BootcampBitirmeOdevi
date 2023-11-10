@@ -79,6 +79,8 @@ public class UserServiceImpl implements UserService<UserDto,User> {
     @Override
     @Transactional
     public UserDto add(UserDto userDto) {
+        this.userBusinessRules.checkIfUserExists(userDto.getEmail());
+
         User user = dtoToEntity(userDto);
         this.userRepository.save(user);
 
@@ -104,9 +106,11 @@ public class UserServiceImpl implements UserService<UserDto,User> {
     @Override
     @Transactional
     public UserDto update(Long id, UserDto userDto) {
-        // TODO: email hali hazırda var olduğundan userDto tarafından gelen email'de aynı olduğundan sistem hata veriyor ilgilen.
+
         var user = getById(id);
         User userToUpdate = dtoToEntity(userDto);
+
+        this.userBusinessRules.checkIfUserEmailUpdate(user.getEmail(), userDto.getEmail());
 
         user.setFirstName(userToUpdate.getFirstName());
         user.setLastName(userToUpdate.getLastName());

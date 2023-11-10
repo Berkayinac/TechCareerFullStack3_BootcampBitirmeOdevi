@@ -1,7 +1,6 @@
 package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos;
 
 
-import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.annotation.AnnotationUniqueEmailAddress;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.audit.AuditingAwareBaseDto;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.enums.UserRoles;
 import jakarta.validation.constraints.Email;
@@ -29,7 +28,6 @@ public class UserDto extends AuditingAwareBaseDto implements Serializable {
 
     @Email
     @NotEmpty(message = "{user.email.validation.constraints.NotNull.message}")
-    @AnnotationUniqueEmailAddress
     private String email;
 
     @NotEmpty(message = "{user.password.validation.constraints.NotNull.message}")
