@@ -1,6 +1,9 @@
 package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.services.impl;
 
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.BMIDto;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.UserLoginDto;
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.UserRegisterDto;
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.services.BMIService;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.services.UserService;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.UserDto;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.rules.UserBusinessRules;
@@ -8,6 +11,8 @@ import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.bean.ModelM
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.bean.PasswordEncoderBeanClass;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.dataAccess.repositories.UserRepository;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.User;
+
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.enums.UserRoles;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,45 +24,54 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Service
-public class UserServiceImpl implements UserService<UserDto,User> {
+public class UserServiceImpl implements UserService<UserDto, User> {
+
     private UserRepository userRepository;
     private UserBusinessRules userBusinessRules;
     private final ModelMapperBeanClass modelMapperBeanClass;
     private final PasswordEncoderBeanClass passwordEncoderBeanClass;
+    private BMIService bmiService;
+    private static User loginUser;
 
     @Override
     public UserDto entityToDto(User user) {
-        return this.modelMapperBeanClass.modelMapperMethod().map(user,UserDto.class);
+        return this.modelMapperBeanClass.modelMapperMethod().map(user, UserDto.class);
     }
 
     @Override
     public User dtoToEntity(UserDto userDto) {
-        return this.modelMapperBeanClass.modelMapperMethod().map(userDto,User.class);
+        return this.modelMapperBeanClass.modelMapperMethod().map(userDto, User.class);
     }
 
     @Override
     public List<UserDto> getAll() {
+        this.userBusinessRules.checkUserLogin(loginUser);
+        this.userBusinessRules.checkIfUserRoleUnAuthorized(loginUser.getRole());
+
         List<UserDto> dtos = new ArrayList<>();
-        var users =  this.userRepository.findAll();
+        var users = this.userRepository.findAll();
 
         //Business Rule
         this.userBusinessRules.checkUsersNotExists(users);
 
         users.forEach(user -> dtos.add(entityToDto(user)));
 
-       return dtos;
+        return dtos;
     }
 
     @Override
     public List<UserDto> getAllByStatus(boolean status) {
+        this.userBusinessRules.checkUserLogin(loginUser);
+        this.userBusinessRules.checkIfUserRoleUnAuthorized(loginUser.getRole());
+
         List<UserDto> dtos = new ArrayList<>();
-        var users =  this.userRepository.findAll();
+        var users = this.userRepository.findAll();
 
         //Business Rule
         this.userBusinessRules.checkUsersNotExists(users);
 
         users.forEach(user -> {
-            if(user.isStatus() == status){
+            if (user.isStatus() == status) {
                 dtos.add(entityToDto(user));
             }
         });
@@ -67,12 +81,20 @@ public class UserServiceImpl implements UserService<UserDto,User> {
 
     @Override
     public UserDto getById(Long id) {
-        var user = this.userRepository.findById(id);
+
+// Login yapan kullanıcının rolü ADMIN ise bu metot kullanılabilir.
+// Rolü USER veya EDITOR ise get edilmek istenen id ile istek yapan kullanıcının ID'sinin match edilmesi kontrol edilir.
+        this.userBusinessRules.checkUserLogin(loginUser);
+        if (!loginUser.getRole().equals(UserRoles.ADMIN.toString())) {
+            this.userBusinessRules.checkIfUsersNotMatch(loginUser.getId(), id);
+        }
 
         //Business Rule
         this.userBusinessRules.checkIfUserExists(id);
 
-        var userDto =  entityToDto(user.get());
+        var user = this.userRepository.findById(id).get();
+
+        var userDto = entityToDto(user);
         return userDto;
     }
 
@@ -82,6 +104,9 @@ public class UserServiceImpl implements UserService<UserDto,User> {
         this.userBusinessRules.checkIfUserExists(userDto.getEmail());
 
         User user = dtoToEntity(userDto);
+
+        user.setPassword(passwordEncoderBeanClass.passwordEncoderMethod().encode(userDto.getPassword()));
+
         this.userRepository.save(user);
 
         userDto.setId(user.getId());
@@ -95,7 +120,19 @@ public class UserServiceImpl implements UserService<UserDto,User> {
     @Override
     @Transactional
     public UserDto delete(UserDto userDto) {
+        this.userBusinessRules.checkUserLogin(loginUser);
         var user = this.userRepository.getUserByEmail(userDto.getEmail());
+
+        if (!loginUser.getRole().equals(UserRoles.ADMIN.toString())) {
+            this.userBusinessRules.checkIfUsersNotMatch(loginUser.getId(), user.getId());
+        }
+
+
+        //Kullanıcı silindiğinde onunla birlikte ona ait olan Vucut kitle indeksleride silinecektir.
+        BMIDto bmiDto = new BMIDto();
+        bmiDto.setUserId(userDto.getId());
+        this.bmiService.deleteAllByUserId(bmiDto);
+
         this.userRepository.delete(user);
         userDto.setSystemDate(new Date(System.currentTimeMillis()));
         return userDto;
@@ -107,6 +144,7 @@ public class UserServiceImpl implements UserService<UserDto,User> {
     @Transactional
     public UserDto update(Long id, UserDto userDto) {
 
+        this.userBusinessRules.checkUserLogin(loginUser);
         var user = getById(id);
         User userToUpdate = dtoToEntity(userDto);
 
@@ -116,8 +154,11 @@ public class UserServiceImpl implements UserService<UserDto,User> {
         user.setLastName(userToUpdate.getLastName());
         user.setEmail(userToUpdate.getEmail());
         user.setPassword(userToUpdate.getPassword());
-        user.setStatus(userToUpdate.isStatus());
-        user.setRole(userToUpdate.getRole());
+
+        if (loginUser.getRole().equals(UserRoles.ADMIN.toString())) {
+            user.setStatus(userToUpdate.isStatus());
+            user.setRole(userToUpdate.getRole());
+        }
 
         this.userRepository.save(dtoToEntity(user));
         userDto.setId(userToUpdate.getId());
@@ -128,14 +169,14 @@ public class UserServiceImpl implements UserService<UserDto,User> {
     @Override
     @Transactional
     public void userServiceSpeedData(Long speedDataCount) {
-        if(speedDataCount == null){
+        if (speedDataCount == null) {
             return;
         }
 
-        for (int i = 1; i <=speedDataCount ; i++) {
+        for (int i = 1; i <= speedDataCount; i++) {
             UserDto userDto = new UserDto();
-            userDto.setFirstName("first name "+ i);
-            userDto.setLastName("last name "+ i);
+            userDto.setFirstName("first name " + i);
+            userDto.setLastName("last name " + i);
             userDto.setEmail("email " + UUID.randomUUID() + "@gmail.com");
             userDto.setPassword("password" + UUID.randomUUID());
             this.add(userDto);
@@ -144,16 +185,17 @@ public class UserServiceImpl implements UserService<UserDto,User> {
 
     @Override
     @Transactional
-    public UserDto register(UserDto userDto) {
+    public UserDto register(UserRegisterDto userRegisterDto) {
         //Business Rule
-        this.userBusinessRules.checkIfUserExists(userDto.getEmail());
+        this.userBusinessRules.checkIfUserExists(userRegisterDto.getEmail());
 
-        User user = dtoToEntity(userDto);
-        user.setPassword(this.passwordEncoderBeanClass.passwordEncoderMethod().encode(userDto.getPassword()));
+        var user = this.modelMapperBeanClass.modelMapperMethod().map(userRegisterDto,User.class);
 
-        this.add(entityToDto(user));
+        var dto = this.entityToDto(user);
 
-        return userDto;
+        this.add(dto);
+
+        return dto;
     }
 
     @Override
@@ -163,8 +205,14 @@ public class UserServiceImpl implements UserService<UserDto,User> {
 
         var user = this.userRepository.getUserByEmail(userLoginDto.getEmail());
 
-        this.userBusinessRules.passwordMatch(userLoginDto.getPassword(),user.getPassword());
+        this.userBusinessRules.passwordMatch(userLoginDto.getPassword(), user.getPassword());
+
+        getLoginUser(user);
 
         return entityToDto(user);
+    }
+
+    public void getLoginUser(User user) {
+        loginUser = user;
     }
 }

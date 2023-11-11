@@ -101,6 +101,13 @@ public class BMIServiceImpl implements BMIService<BMIDto, BMIEntity> {
         return bmiDto;
     }
 
+    @Override
+    public BMIDto deleteAllByUserId(BMIDto bmiDto) {
+        var list = this.bmiRepository.findAllByUserId(bmiDto.getUserId());
+        this.bmiRepository.deleteAll(list);
+        return bmiDto;
+    }
+
     private String calculateBmiZayif(double bodyMassIndex, String result){
         if(bodyMassIndex < 18.5){
             result = BMIResults.ZAYIF.toString();

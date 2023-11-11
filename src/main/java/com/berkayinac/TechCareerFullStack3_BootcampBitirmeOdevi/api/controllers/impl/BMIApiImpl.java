@@ -52,4 +52,10 @@ public class BMIApiImpl implements IBMIApi<BMIDto> {
     public ResponseEntity<?> calculate(@Valid @RequestBody BMIDto bmiDto) {
         return ResponseEntity.ok(this.bmiService.calculate(bmiDto));
     }
+
+    @Override
+    @DeleteMapping("/deleteall")
+    public ResponseEntity<?> deleteAllByUserId(@Valid @RequestBody BMIDto bmiDto) {
+        return ResponseEntity.ok(this.bmiService.deleteAllByUserId(bmiDto));
+    }
 }

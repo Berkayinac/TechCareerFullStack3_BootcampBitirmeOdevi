@@ -13,4 +13,5 @@ public interface IBMIApi<D> {
     ResponseEntity<?> delete(D d);
     ResponseEntity<?> update(Long id,D d);
     ResponseEntity<?> calculate(D d);
+    ResponseEntity<?> deleteAllByUserId(D d);
 }

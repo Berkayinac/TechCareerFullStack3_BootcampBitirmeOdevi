@@ -26,7 +26,6 @@ public class BlogCommandLineRunner {
     public CommandLineRunner blogCommandLineRunnerMethod(UserService userService) { //
         // Lambda Expression
         return args -> {
-            // TODO: UserService içerisinde speed data eklenecek.
             System.out.println("CommandLineRunner Çalıştı");
             log.info("CommandLineRunner Çalıştı");
             userService.userServiceSpeedData(1L);

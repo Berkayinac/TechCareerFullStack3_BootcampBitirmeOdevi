@@ -14,4 +14,5 @@ public interface BMIService<D,E> {
     D delete(D d);
     D update(Long id,D d);
     D calculate(D d);
+    D deleteAllByUserId(D d);
 }
