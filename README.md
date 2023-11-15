@@ -4,8 +4,6 @@
 - *Java*  **Core**
 - *Java* `Spring Boot`
 
-## RolMap
-
 ### Bean
 ```sh
 ModelMapper
