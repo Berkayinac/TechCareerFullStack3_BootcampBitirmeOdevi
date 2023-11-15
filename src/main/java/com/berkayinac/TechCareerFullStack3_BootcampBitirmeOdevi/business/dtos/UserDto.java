@@ -34,9 +34,6 @@ public class UserDto extends AuditingAwareBaseDto implements Serializable {
     private String password;
 
     @Builder.Default
-    private Date registrationDay = new Date(System.currentTimeMillis());
-
-    @Builder.Default
     private boolean status = false;
 
     @Builder.Default

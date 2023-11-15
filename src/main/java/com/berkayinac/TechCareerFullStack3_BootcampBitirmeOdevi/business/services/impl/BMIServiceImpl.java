@@ -97,8 +97,7 @@ public class BMIServiceImpl implements BMIService<BMIDto, BMIEntity> {
         }
         bmiDto.setResult(result);
 
-        this.add(bmiDto);
-        return bmiDto;
+        return this.add(bmiDto);
     }
 
     @Override

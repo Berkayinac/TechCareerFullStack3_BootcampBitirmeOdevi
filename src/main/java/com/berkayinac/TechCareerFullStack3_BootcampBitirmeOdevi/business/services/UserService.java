@@ -2,6 +2,7 @@ package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.servic
 
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.UserLoginDto;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.business.dtos.UserRegisterDto;
+import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.User;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface UserService<D,E> {
     void userServiceSpeedData(Long speedDataCount);
     D register(UserRegisterDto userRegisterDto);
     D login(UserLoginDto userLoginDto);
+    void setLoginUser(E e);
+    E getLoginUser();
 }

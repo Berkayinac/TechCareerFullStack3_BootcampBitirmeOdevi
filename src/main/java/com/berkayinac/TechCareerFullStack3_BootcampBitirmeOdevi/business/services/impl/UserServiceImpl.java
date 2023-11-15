@@ -45,8 +45,7 @@ public class UserServiceImpl implements UserService<UserDto, User> {
 
     @Override
     public List<UserDto> getAll() {
-        this.userBusinessRules.checkUserLogin(loginUser);
-        this.userBusinessRules.checkIfUserRoleUnAuthorized(loginUser.getRole());
+
 
         List<UserDto> dtos = new ArrayList<>();
         var users = this.userRepository.findAll();
@@ -61,34 +60,20 @@ public class UserServiceImpl implements UserService<UserDto, User> {
 
     @Override
     public List<UserDto> getAllByStatus(boolean status) {
-        this.userBusinessRules.checkUserLogin(loginUser);
-        this.userBusinessRules.checkIfUserRoleUnAuthorized(loginUser.getRole());
-
         List<UserDto> dtos = new ArrayList<>();
-        var users = this.userRepository.findAll();
+
+        var users = this.userRepository.getUsersByStatus(status);
+
+        users.forEach(user -> dtos.add(entityToDto(user)));
 
         //Business Rule
         this.userBusinessRules.checkUsersNotExists(users);
-
-        users.forEach(user -> {
-            if (user.isStatus() == status) {
-                dtos.add(entityToDto(user));
-            }
-        });
 
         return dtos;
     }
 
     @Override
     public UserDto getById(Long id) {
-
-// Login yapan kullanıcının rolü ADMIN ise bu metot kullanılabilir.
-// Rolü USER veya EDITOR ise get edilmek istenen id ile istek yapan kullanıcının ID'sinin match edilmesi kontrol edilir.
-        this.userBusinessRules.checkUserLogin(loginUser);
-        if (!loginUser.getRole().equals(UserRoles.ADMIN.toString())) {
-            this.userBusinessRules.checkIfUsersNotMatch(loginUser.getId(), id);
-        }
-
         //Business Rule
         this.userBusinessRules.checkIfUserExists(id);
 
@@ -120,13 +105,8 @@ public class UserServiceImpl implements UserService<UserDto, User> {
     @Override
     @Transactional
     public UserDto delete(UserDto userDto) {
-        this.userBusinessRules.checkUserLogin(loginUser);
+
         var user = this.userRepository.getUserByEmail(userDto.getEmail());
-
-        if (!loginUser.getRole().equals(UserRoles.ADMIN.toString())) {
-            this.userBusinessRules.checkIfUsersNotMatch(loginUser.getId(), user.getId());
-        }
-
 
         //Kullanıcı silindiğinde onunla birlikte ona ait olan Vucut kitle indeksleride silinecektir.
         BMIDto bmiDto = new BMIDto();
@@ -144,7 +124,6 @@ public class UserServiceImpl implements UserService<UserDto, User> {
     @Transactional
     public UserDto update(Long id, UserDto userDto) {
 
-        this.userBusinessRules.checkUserLogin(loginUser);
         var user = getById(id);
         User userToUpdate = dtoToEntity(userDto);
 
@@ -189,13 +168,11 @@ public class UserServiceImpl implements UserService<UserDto, User> {
         //Business Rule
         this.userBusinessRules.checkIfUserExists(userRegisterDto.getEmail());
 
-        var user = this.modelMapperBeanClass.modelMapperMethod().map(userRegisterDto,User.class);
+        var userDto = this.modelMapperBeanClass.modelMapperMethod().map(userRegisterDto,UserDto.class);
 
-        var dto = this.entityToDto(user);
+        this.add(userDto);
 
-        this.add(dto);
-
-        return dto;
+        return userDto;
     }
 
     @Override
@@ -207,12 +184,16 @@ public class UserServiceImpl implements UserService<UserDto, User> {
 
         this.userBusinessRules.passwordMatch(userLoginDto.getPassword(), user.getPassword());
 
-        getLoginUser(user);
+        setLoginUser(user);
 
         return entityToDto(user);
     }
 
-    public void getLoginUser(User user) {
+    public void setLoginUser(User user) {
         loginUser = user;
+    }
+
+    public User getLoginUser() {
+        return loginUser;
     }
 }

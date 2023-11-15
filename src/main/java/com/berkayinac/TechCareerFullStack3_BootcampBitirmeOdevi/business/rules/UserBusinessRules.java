@@ -65,26 +65,4 @@ public class UserBusinessRules {
             checkIfUserExists(newEmail);
         }
     }
-
-    public void checkIfUserRoleUnAuthorized(String role) {
-        String userRoleUnAuthorized = "Yetkiniz Yok!";
-        if (!role.equals(UserRoles.ADMIN.toString())) {
-            throw new BusinessRulesException(userRoleUnAuthorized);
-        }
-    }
-
-    public void checkIfUsersNotMatch(Long loginUserId, Long userId) {
-        String usersNotMatch = "Yetkiniz Yok!";
-        if (!loginUserId.equals(userId)) {
-            throw new BusinessRulesException(usersNotMatch);
-        }
-    }
-
-    public void checkUserLogin(User user) {
-        String userLogin = "Lütfen giriş yapınız.";
-        if (user == null) {
-            throw new BusinessRulesException(userLogin);
-        }
-    }
-
 }

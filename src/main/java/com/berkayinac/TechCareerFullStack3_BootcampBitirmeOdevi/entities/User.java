@@ -33,9 +33,6 @@ public class User extends BaseEntity implements Serializable {
     @Column(name="password")
     private String password;
 
-    @Column(name="registration_day")
-    private Date registrationDay;
-
     @Column(name = "status")
     private boolean status;
 
