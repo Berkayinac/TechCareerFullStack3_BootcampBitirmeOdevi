@@ -1,13 +1,11 @@
 package com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.error;
 
-import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.core.utils.FrontendPortUrl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
@@ -26,7 +24,6 @@ import java.util.Map;
 
 // Spring Boot defaulttan gelen error'ı kendimize göre customise yapıyoruz.
 @RestController
-@CrossOrigin(origins = FrontendPortUrl.REACT_FRONTEND_PORT_URL) //localhost:3000 portunu backentte kullanabiliriz.
 public class CustomErrorHandleWebRequest implements ErrorController {
 
     // 1.YOL (Field Injection)

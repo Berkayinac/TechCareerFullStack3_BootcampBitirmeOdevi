@@ -55,7 +55,9 @@ public class AuthManager implements AuthService {
             return userDtoList;
         }
         else{
-            return userDtoList.stream().filter(userDto -> Objects.equals(userDto.getId(), user.getId())).toList();
+            var dtoList = userDtoList.stream().filter(userDto -> Objects.equals(userDto.getId(), user.getId())).toList();
+            this.authBusinessRules.checkEntitiesNotExists(dtoList);
+            return dtoList;
         }
     }
 
@@ -76,7 +78,9 @@ public class AuthManager implements AuthService {
     @Transactional
     public UserDto updateUser(Long userId, UserDto userDto) {
         this.authBusinessRules.checkUserLogin(this.getLoginUser());
-        return this.userService.update(userId,userDto);
+
+        this.verifyUserRoleAndUserIdForUserDto(userId,userDto);
+        return this.userService.update(userDto.getId(),userDto);
     }
 
     @Override
@@ -110,7 +114,7 @@ public class AuthManager implements AuthService {
     @Transactional
     public BMIDto calculateBMI(Long userId, BMIDto bmiDto) {
         this.authBusinessRules.checkUserLogin(this.getLoginUser());
-        this.verifyUserRoleAndUserId(userId,bmiDto);
+        this.verifyUserRoleAndUserIdForBMIDto(userId,bmiDto);
 
         return this.bmiService.calculate(bmiDto);
     }
@@ -120,7 +124,7 @@ public class AuthManager implements AuthService {
     public BMIDto deleteBMIByUserId(Long userId, BMIDto bmiDto) {
         this.authBusinessRules.checkUserLogin(this.getLoginUser());
     // this.authBusinessRules.checkIfUserRoleUnAuthorized(this.getLoginUser().getRole());
-        this.verifyUserRoleAndUserId(userId,bmiDto);
+        this.verifyUserRoleAndUserIdForBMIDto(userId,bmiDto);
 
         return this.bmiService.delete(bmiDto);
     }
@@ -130,7 +134,7 @@ public class AuthManager implements AuthService {
     public BMIDto deleteAllByUserId(Long userId, BMIDto bmiDto) {
         this.authBusinessRules.checkUserLogin(this.getLoginUser());
         // this.authBusinessRules.checkIfUserRoleUnAuthorized(this.getLoginUser().getRole());
-        this.verifyUserRoleAndUserId(userId,bmiDto);
+        this.verifyUserRoleAndUserIdForBMIDto(userId,bmiDto);
 
         return this.bmiService.deleteAllByUserId(bmiDto);
     }
@@ -147,7 +151,9 @@ public class AuthManager implements AuthService {
             return bmiDtoList;
         }
         else{
-            return bmiDtoList.stream().filter(bmiDto -> Objects.equals(bmiDto.getUserId(), user.getId())).toList();
+            var dtoList = bmiDtoList.stream().filter(bmiDto -> Objects.equals(bmiDto.getUserId(), user.getId())).toList();
+            this.authBusinessRules.checkEntitiesNotExists(dtoList);
+            return dtoList;
         }
     }
 
@@ -163,10 +169,20 @@ public class AuthManager implements AuthService {
         }
 
         var bmiDtoList = this.getAllBMIs();
-        return bmiDtoList.stream().filter(bmiDto -> Objects.equals(bmiDto.getId(), id)).findFirst().get();
+        return bmiDtoList.stream().filter(bmiDto -> Objects.equals(bmiDto.getUserId(), user.getId()) && Objects.equals(bmiDto.getId(), id)).findFirst().get();
     }
 
-    private void verifyUserRoleAndUserId(Long userId, BMIDto bmiDto){
+    @Override
+    @Transactional
+    public BMIDto updateBMI(Long id, BMIDto bmiDto) {
+        var user = this.getLoginUser();
+        this.authBusinessRules.checkUserLogin(user);
+        this.verifyUserRoleAndUserIdForBMIDto(this.getLoginUser().getId(),bmiDto);
+
+       return this.bmiService.update(id,bmiDto);
+    }
+
+    private void verifyUserRoleAndUserIdForBMIDto(Long userId, BMIDto bmiDto){
         var user = this.getLoginUser();
 
         // calculate metodunu çalıştıran kişi ADMIN yetkisine sahip ise userId parametreden alınarak işlem yapılır.
@@ -177,6 +193,20 @@ public class AuthManager implements AuthService {
         // eğer kullanıcı admin yetkisine sahip değil ise login yapan kullanıcının Id'si kullanılır.
         else{
             bmiDto.setUserId(user.getId());
+        }
+    }
+
+    private void verifyUserRoleAndUserIdForUserDto(Long userId, UserDto userDto){
+        var user = this.getLoginUser();
+
+        // calculate metodunu çalıştıran kişi ADMIN yetkisine sahip ise userId parametreden alınarak işlem yapılır.
+        if(user.getRole().equals(UserRoles.ADMIN.toString())){
+            userDto.setId(userId);
+        }
+
+        // eğer kullanıcı admin yetkisine sahip değil ise login yapan kullanıcının Id'si kullanılır.
+        else{
+            userDto.setId(user.getId());
         }
     }
 }

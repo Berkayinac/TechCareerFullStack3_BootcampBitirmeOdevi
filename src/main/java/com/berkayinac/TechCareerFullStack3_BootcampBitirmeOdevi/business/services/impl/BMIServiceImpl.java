@@ -56,7 +56,9 @@ public class BMIServiceImpl implements BMIService<BMIDto, BMIEntity> {
     @Override
     @Transactional
     public BMIDto add(BMIDto bmiDto) {
-        this.bmiRepository.save(this.dtoToEntity(bmiDto));
+        var bmiEntity = this.dtoToEntity(bmiDto);
+        this.bmiRepository.save(bmiEntity);
+        bmiDto.setId(bmiEntity.getId());
         return bmiDto;
     }
 

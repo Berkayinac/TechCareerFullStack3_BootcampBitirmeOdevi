@@ -23,4 +23,5 @@ public interface AuthService {
     BMIDto deleteAllByUserId(Long userId, BMIDto bmiDto);
     List<BMIDto> getAllBMIs();
     BMIDto getBMIById(Long id);
+    BMIDto updateBMI(Long id,BMIDto bmiDto);
 }

@@ -5,6 +5,8 @@ import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.User;
 import com.berkayinac.TechCareerFullStack3_BootcampBitirmeOdevi.entities.enums.UserRoles;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthBusinessRules {
     public void checkUserLogin(User user) {
@@ -25,6 +27,13 @@ public class AuthBusinessRules {
         String usersNotMatch = "Yetkiniz Yok!";
         if (!loginUserId.equals(userId)) {
             throw new BusinessRulesException(usersNotMatch);
+        }
+    }
+
+    public void checkEntitiesNotExists(List<?> list) {
+        String entitiesNotExistsMessage = "Sistemde kayıtlı veri bulunamadı.";
+        if (list.isEmpty()) {
+            throw new BusinessRulesException(entitiesNotExistsMessage);
         }
     }
 }

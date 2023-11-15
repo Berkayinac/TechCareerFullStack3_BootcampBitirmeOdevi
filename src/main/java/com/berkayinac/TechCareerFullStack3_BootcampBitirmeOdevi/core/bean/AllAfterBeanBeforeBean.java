@@ -11,12 +11,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AllAfterBeanBeforeBean {
 
-    // Command Line Runner Bean Method
-    @Bean(initMethod = "blogCommandLineRunnerAfterBeanMethod",destroyMethod ="blogCommandLineRunnerBeforeBeanMethod")
-    public BlogCommandLineRunner blogCommandLineRunner(){
-        return new BlogCommandLineRunner();
-    }
-
     // Model Mapper
     @Bean(initMethod = "modelMapperBeforeBeanMethod",destroyMethod ="modelMapperAfterBeanMethod")
     public ModelMapperBeanClass modelMapperBeanClass(){

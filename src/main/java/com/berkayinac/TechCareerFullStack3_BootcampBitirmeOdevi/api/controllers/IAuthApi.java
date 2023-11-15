@@ -21,5 +21,6 @@ public interface IAuthApi {
     ResponseEntity<BMIDto> deleteAllByUserId(Long userId, BMIDto bmiDto);
     ResponseEntity<List<BMIDto>> getAllBMIs();
     ResponseEntity<BMIDto> getBMIById(Long id);
+    ResponseEntity<BMIDto> updateBMI(Long id, BMIDto bmiDto);
 
 }

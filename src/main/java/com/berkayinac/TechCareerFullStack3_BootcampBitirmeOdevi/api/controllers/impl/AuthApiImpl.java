@@ -92,4 +92,10 @@ public class AuthApiImpl implements IAuthApi {
     public ResponseEntity<BMIDto> getBMIById(@RequestParam Long id) {
         return ResponseEntity.ok(this.authService.getBMIById(id));
     }
+
+    @Override
+    @PutMapping("/updatebmi")
+    public ResponseEntity<BMIDto> updateBMI(@RequestParam Long id, @Valid @RequestBody BMIDto bmiDto) {
+        return ResponseEntity.ok(this.authService.updateBMI(id,bmiDto));
+    }
 }
