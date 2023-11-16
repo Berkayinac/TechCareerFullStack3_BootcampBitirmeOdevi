@@ -1,7 +1,6 @@
 ## BitirmeProjesiVKI
 
 ## Technology
-- *Java*  **Core**
 - *Java* `Spring Boot`
 
 ### Bean
